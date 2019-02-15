@@ -4,6 +4,7 @@ import TankEditor from './TankEditor';
 import { ITank } from '../lib/ITank';
 
 import styles from './Tank.module.css';
+import App from '../App';
 
 export enum TeamColor {
   Rogue = 'rogue',
@@ -32,6 +33,9 @@ interface State {
 }
 
 export default class Tank extends Component<Props, State> {
+  static TANK_WIDTH = 35;
+  static TANK_HEIGHT = 70;
+
   static defaultProps = {
     tank: {
       name: '',
@@ -90,10 +94,12 @@ export default class Tank extends Component<Props, State> {
       fill: Tank.getColorFromTeam(this.state.preview.team),
     };
 
+    const xOffset: number = (App.MAP_SIZE / 2) - (Tank.TANK_WIDTH / 2);
+    const yOffset: number = (App.MAP_SIZE / 2) - (Tank.TANK_HEIGHT / 2);
     const moveTransform = {
       transform: `translate(
-        ${+this.state.preview.position[0]}px,
-        ${-1 * +this.state.preview.position[1]}px
+        ${xOffset - (-1 * +this.state.preview.position[0])}px,
+        ${yOffset - +this.state.preview.position[1]}px
       )`,
     };
 

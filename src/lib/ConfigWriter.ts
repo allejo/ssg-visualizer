@@ -9,7 +9,7 @@ export class ConfigWriter {
 
     for (let i = 0; i < items.length; i++) {
       const item: ConfigWritable = items[i];
-      const parts: string [] = [];
+      const parts: string[] = [];
 
       if (item.disabled) {
         continue;
@@ -21,8 +21,12 @@ export class ConfigWriter {
         parts.push(`[${tankDef.name || 'Tank_' + randomID()}]`);
         parts.push(`type = tank`);
         parts.push(`team = ${tankDef.team}`);
-        parts.push(`pos = ${tankDef.position[0]} ${tankDef.position[1]} ${tankDef.position[2]}`);
-        parts.push(`rot = ${tankDef.rotation}`)
+        parts.push(
+          `pos = ${tankDef.position[0]} ${tankDef.position[1]} ${
+            tankDef.position[2]
+          }`,
+        );
+        parts.push(`rot = ${tankDef.rotation}`);
       }
 
       output.push(parts.join('\n'));
