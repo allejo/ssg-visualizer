@@ -20,6 +20,8 @@ type NullableNum = number | string;
 export type Vector3F = [NullableNum, NullableNum, NullableNum];
 
 interface Props {
+  onUpdate: (final: ITank) => void;
+
   tank: ITank;
 }
 
@@ -75,6 +77,8 @@ export default class Tank extends Component<Props, State> {
   };
 
   public handleSave = (final: ITank) => {
+    this.props.onUpdate(final);
+
     this.setState({
       hasEditor: false,
       preview: final,
