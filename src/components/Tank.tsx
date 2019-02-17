@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Popup from './Popup';
-import TankEditor from './TankEditor';
 import { ITank } from '../lib/ITank';
 
 import styles from './Tank.module.css';
@@ -21,18 +19,13 @@ type NullableNum = number | string;
 export type Vector3F = [NullableNum, NullableNum, NullableNum];
 
 interface Props {
-  onUpdate: (final: ITank) => void;
-
+  selected: boolean;
   tank: ITank;
+
+  onClick: () => void;
 }
 
-interface State {
-  hasEditor: boolean;
-
-  preview: ITank;
-}
-
-export default class Tank extends Component<Props, State> {
+export default class Tank extends Component<Props> {
   static TANK_WIDTH = 35;
   static TANK_HEIGHT = 70;
 
@@ -46,70 +39,30 @@ export default class Tank extends Component<Props, State> {
     },
   };
 
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      hasEditor: false,
-      preview: props.tank,
-    };
-  }
-
-  public handleClick = () => {
-    this.setState((prevState: State) => ({
-      hasEditor: !prevState.hasEditor,
-    }));
-  };
-
-  public handleEditorClose = () => {
-    this.setState({
-      hasEditor: false,
-    });
-  };
-
-  public handlePreview = (preview: ITank) => {
-    this.setState({
-      preview,
-    });
-  };
-
-  public handleCancel = () => {
-    this.setState({
-      hasEditor: false,
-      preview: this.props.tank,
-    });
-  };
-
-  public handleSave = (final: ITank) => {
-    this.props.onUpdate(final);
-
-    this.setState({
-      hasEditor: false,
-      preview: final,
-    });
-  };
-
   public render(): React.ReactNode {
     const style = {
-      fill: Tank.getColorFromTeam(this.state.preview.team),
+      fill: Tank.getColorFromTeam(this.props.tank.team),
     };
 
-    const xOffset: number = (App.MAP_SIZE / 2) - (Tank.TANK_WIDTH / 2);
-    const yOffset: number = (App.MAP_SIZE / 2) - (Tank.TANK_HEIGHT / 2);
+    const xOffset: number = App.MAP_SIZE / 2 - Tank.TANK_WIDTH / 2;
+    const yOffset: number = App.MAP_SIZE / 2 - Tank.TANK_HEIGHT / 2;
     const moveTransform = {
       transform: `translate(
-        ${xOffset - (-1 * +this.state.preview.position[0])}px,
-        ${yOffset - +this.state.preview.position[1]}px
+        ${xOffset - -1 * +this.props.tank.position[0]}px,
+        ${yOffset - +this.props.tank.position[1]}px
       )`,
     };
 
     const tankTransform = {
-      transform: `rotate(${this.state.preview.rotation}deg)`,
+      transform: `rotate(${this.props.tank.rotation}deg)`,
     };
 
     return (
       <div className={styles.TankWrapper} style={moveTransform}>
-        <div style={tankTransform}>
+        <div
+          className={this.props.selected ? styles.TankSelected : undefined}
+          style={tankTransform}
+        >
           <svg
             version="1.1"
             x="0px"
@@ -117,7 +70,7 @@ export default class Tank extends Component<Props, State> {
             width="35px"
             height="73px"
             viewBox="0 0 35 73"
-            onClick={this.handleClick}
+            onClick={this.props.onClick}
           >
             <rect y="18.2" width="6.9" height="54.8" style={style} />
             <rect x="28.2" y="18.2" width="6.8" height="54.8" style={style} />
@@ -127,17 +80,6 @@ export default class Tank extends Component<Props, State> {
             />
           </svg>
         </div>
-
-        {this.state.hasEditor && (
-          <Popup onClose={this.handleEditorClose}>
-            <TankEditor
-              onPreviewChanges={this.handlePreview}
-              onCancelChanges={this.handleCancel}
-              onSaveChanges={this.handleSave}
-              tankDef={this.state.preview}
-            />
-          </Popup>
-        )}
       </div>
     );
   }
