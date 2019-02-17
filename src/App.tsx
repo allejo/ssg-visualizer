@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import Tank from './components/Tank';
-import './App.module.css';
-import { DefaultTank, ITank } from './lib/ITank';
+import TankEditor from './components/TankEditor';
 import { ConfigWriter } from './lib/ConfigWriter';
+import { DefaultTank, ITank } from './lib/ITank';
+import { IShot } from './lib/IShot';
 
 import styles from './App.module.css';
-import { IShot } from './lib/IShot';
-import TankEditor from './components/TankEditor';
 
 interface Props {}
 
@@ -83,14 +82,19 @@ export default class App extends Component<Props, State> {
       <div>
         <div style={{ display: 'flex' }}>
           <div className={styles.MapPreview}>
-            {this.state.tanks.map((tank: ITank, i: number) => (
-              <Tank
-                key={i}
-                tank={isTank && preview !== null ? preview : tank}
-                selected={isTank && i === selectionID}
-                onClick={() => this.handleTankClick(i)}
-              />
-            ))}
+            {this.state.tanks.map((tank: ITank, i: number) => {
+              const tankDef = (isTank && selectionID === i && preview !== null) ? preview : tank;
+              const isSelected = isTank && i === selectionID;
+
+              return (
+                <Tank
+                  key={i}
+                  tank={tankDef}
+                  selected={isSelected}
+                  onClick={() => this.handleTankClick(i)}
+                />
+              );
+            })}
           </div>
 
           <div>
